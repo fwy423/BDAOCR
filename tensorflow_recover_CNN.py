@@ -1,6 +1,6 @@
 import tensorflow as tf
 import numpy as np
-from image_load_save import load_data
+from image_load_save import load_data, check_path, batch_recover
 
 
 def conv_layer(input_x, in_size, out_size, kernal_shape, seed, index=""):
@@ -117,6 +117,7 @@ class My_CNN(object):
 
         with tf.name_scope("prediction"):
             y_pred = tf.reshape(conv_4_1, [-1, input_size * input_size], name="y_pred")
+            self.y_pred = y_pred
 
         with tf.name_scope("loss"):
             # the loss of prediction result
@@ -137,6 +138,9 @@ def training(training_input, training_truth,
     ############
     # Training #
     ############
+    check_path("my_params")
+    check_path("log/")
+
     image_size = int(np.sqrt(training_input.shape[1]))
 
     with tf.name_scope('CNN'):
@@ -149,6 +153,7 @@ def training(training_input, training_truth,
     best_valid = np.infty
     with tf.Session() as sess:
         merged = tf.summary.merge_all()
+
         writer = tf.summary.FileWriter("log/", sess.graph)
 
         sess.run(tf.global_variables_initializer())
@@ -166,19 +171,44 @@ def training(training_input, training_truth,
                 sess.run(my_cnn.train_step, feed_dict={my_cnn.xs: training_batch,
                                                        my_cnn.ys: training_batch_truth})
 
-                train_loss = sess.run(my_cnn.loss, feed_dict={my_cnn.xs: training_batch,
-                                                              my_cnn.ys: training_batch_truth})
-
                 if iter_total % 100 == 1:
-                    print("iter: %d, training RMES: %.4f" % (iter_total, train_loss))
-                    merged_result = sess.run(merged, feed_dict={my_cnn.xs: training_batch,
-                                                                my_cnn.ys: training_batch_truth})
+                    valid_loss = sess.run(my_cnn.loss, feed_dict={my_cnn.xs: validate_input,
+                                                                  my_cnn.ys: validate_truth})
+                    print("iter: %d, valid RMES: %4f" % (iter_total, valid_loss))
+                    merged_result = sess.run(merged, feed_dict={my_cnn.xs: validate_input,
+                                                                my_cnn.ys: validate_truth})
                     writer.add_summary(merged_result, iter_total)
 
-            valid_loss = sess.run(my_cnn.loss, feed_dict={my_cnn.xs: validate_input,
-                                                          my_cnn.ys: validate_truth})
-            if valid_loss < best_valid:
-                best_valid = valid_loss
+                    if valid_loss < best_valid:
+                        best_valid = valid_loss
+                        test_loss = sess.run(my_cnn.loss, feed_dict={my_cnn.xs: test_input,
+                                                                     my_cnn.ys: test_truth})
+
+                        print("======Best validation, test RMES: %4f" % test_loss)
+
+                        saver = tf.train.Saver()
+
+                        saver.save(sess, "my_params/save_net.ckpt")
+
+
+def load_CNN(pred_input, param_path="my_params/save_net.ckpt"):
+    image_size = int(np.sqrt(pred_input.shape[1]))
+
+    my_cnn = My_CNN(
+        input_size=image_size,
+        seed=seed,
+        learning_rate=learning_rate
+    )
+
+    with tf.Session() as sess:
+        sess.run(tf.global_variables_initializer())
+
+        saver = tf.train.Saver()
+        saver.restore(sess, "my_params/save_net.ckpt")
+        result = sess.run(my_cnn.y_pred, feed_dict={my_cnn.xs: pred_input,
+                                                    my_cnn.ys: pred_input})
+
+        batch_recover(result)
 
 
 if __name__ == '__main__':

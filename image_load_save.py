@@ -133,7 +133,7 @@ def batch_recover(batch_input, image_length=16, rows_in_single_image=64, recover
 
 
 if __name__ == '__main__':
-    parse_data(400, 100, 100)
+    parse_data(40, 10, 10)
     rval = load_data()
     train_input, train_output = rval[0]
     valid_input, valid_output = rval[1]
