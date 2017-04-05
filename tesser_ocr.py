@@ -10,13 +10,14 @@ def batch_rec(img_path):
 
     dirs = os.listdir(img_path)
     for img in dirs:
-        # try:
-        #     content = tesserocr.file_to_text(img)
-        # except Exception:
-        #     print("skip", img)
-        #     continue
+        print("predicting "+img)
+        try:
+            content = tesserocr.file_to_text(img)
+        except Exception:
+            print("skip", img)
+            continue
 
-        content = tesserocr.file_to_text(img_path+img)
+        # content = tesserocr.file_to_text(img_path+img)
 
         name, _ = img.split(".")
         with open(img_path + name + '_rec.txt', 'w') as file:

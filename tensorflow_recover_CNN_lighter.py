@@ -218,7 +218,7 @@ feature_map_size = [64, 128]
 learning_rate = 1e-4
 
 batch_size = 128
-epoch = 50
+epoch = 80
 
 ####################
 # Building Network #
@@ -304,6 +304,12 @@ with tf.Session() as sess:
     writer = tf.summary.FileWriter("log/", sess.graph)
 
     sess.run(tf.global_variables_initializer())
+
+    # load the previous training result if it is possible
+    try:
+        saver.restore(sess, "my_params/light-model")
+    except Exception:
+        pass
 
     iter_total = 0
     for i in range(epoch):
