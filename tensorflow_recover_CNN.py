@@ -194,13 +194,13 @@ def training(training_input, training_truth,
 def load_CNN(pred_input, param_path="my_params/save_net.ckpt"):
     image_size = int(np.sqrt(pred_input.shape[1]))
 
-    my_cnn = My_CNN(
-        input_size=image_size,
-        seed=123
-    )
-
     with tf.Session() as sess:
         sess.run(tf.global_variables_initializer())
+
+        my_cnn = My_CNN(
+            input_size=image_size,
+            seed=123
+        )
 
         saver = tf.train.Saver()
         saver.restore(sess, param_path)
