@@ -59,7 +59,7 @@ class My_CNN(object):
 
             x = tf.reshape(xs, [-1, input_size, input_size, 1])
 
-        # layer 1, input(batch_size * 16 * 16 * 1) -> output(batch_size * 16 * 16 * 64）
+        # layer 1, input(batch_size * 16 * 16 * 1) -> output(batch_size * 16 * 16 * 64)
         conv_1_1 = conv_layer(input_x=x,
                               in_size=1,
                               out_size=feature_map_size[0],
@@ -73,7 +73,7 @@ class My_CNN(object):
                               seed=seed,
                               index="1_2")
 
-        # layer 2, input(batch_size * 16 * 16 * 64) -> output(batch_size * 8 * 8 * 128）
+        # layer 2, input(batch_size * 16 * 16 * 64) -> output(batch_size * 8 * 8 * 128)
         avg_pooling_2 = avg_pooling_layer(input_x=conv_1_2, k_size=2)
 
         conv_2_1 = conv_layer(input_x=avg_pooling_2,
@@ -105,7 +105,7 @@ class My_CNN(object):
                               seed=seed,
                               index="3_2")
 
-        # layer 4, input(batch_size * 16 * 16 * 64) -> output(batch_size * 16 * 16 * 1）
+        # layer 4, input(batch_size * 16 * 16 * 64) -> output(batch_size * 16 * 16 * 1)
         adding = conv_3_2 + conv_1_2
 
         conv_4_1 = conv_layer(input_x=adding,
@@ -196,15 +196,14 @@ def load_CNN(pred_input, param_path="my_params/save_net.ckpt"):
 
     my_cnn = My_CNN(
         input_size=image_size,
-        seed=seed,
-        learning_rate=learning_rate
+        seed=123
     )
 
     with tf.Session() as sess:
         sess.run(tf.global_variables_initializer())
 
         saver = tf.train.Saver()
-        saver.restore(sess, "my_params/save_net.ckpt")
+        saver.restore(sess, param_path)
         result = sess.run(my_cnn.y_pred, feed_dict={my_cnn.xs: pred_input,
                                                     my_cnn.ys: pred_input})
 
@@ -220,5 +219,7 @@ if __name__ == '__main__':
     training(train_input, train_output,
              valid_input, valid_output,
              test_input, test_output,
-             batch_size=128, epoch=1,
+             batch_size=128, epoch=50,
              learning_rate=1e-4, seed=123)
+
+    load_CNN(test_input)
