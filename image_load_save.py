@@ -103,9 +103,9 @@ def reform_image(image_matrix, image_length, name_index=0, recover_path="recover
     recover_img[:image_length, :image_stride] += last_row[:, -image_stride:]
     recover = np.asarray(recover_img / 2, dtype=np.uint8)
 
-    print("#%d image of test result successfully!" % name_index)
-    img = Image.fromarray(recover.astype(np.uint8))
-    img.save(recover_path + 'test_result_#%d.png' % name_index)
+    # print("#%d image of test result successfully!" % name_index)
+    # img = Image.fromarray(recover.astype(np.uint8))
+    # img.save(recover_path + 'test_result_#%d.png' % name_index)
     return recover
 
 
