@@ -12,7 +12,7 @@ def batch_rec(img_path):
     for img in dirs:
         print("predicting "+img)
         try:
-            content = tesserocr.file_to_text(img)
+            content = tesserocr.file_to_text(img_path+img)
         except Exception:
             print("skip", img)
             continue
