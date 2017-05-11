@@ -130,13 +130,13 @@ def main(image_url):
     #     print("select a image!")
     #     quit()
 
-    # extension = image_url.split('.')[-1].split('?')[0]
-    # file_name = 'image.%s' % extension
-    #
-    # response = requests.get(image_url, stream=True)
-    # with open(file_name, 'wb') as out_file:
-    #     shutil.copyfileobj(response.raw, out_file)
-    file_name = image_url
+    extension = image_url.split('.')[-1].split('?')[0]
+    file_name = 'image.%s' % extension
+
+    response = requests.get(image_url, stream=True)
+    with open(file_name, 'wb') as out_file:
+        shutil.copyfileobj(response.raw, out_file)
+    # file_name = image_url
 
     if not os.path.exists(file_name):
         print("file do not exist!")
@@ -178,4 +178,4 @@ def main(image_url):
 
 if __name__ == '__main__':
     test_url = 'http://example.com/image.png'
-    main("WechatIMG1.jpeg")
+    main(test_url)
