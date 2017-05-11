@@ -15,3 +15,7 @@ def apply_ocr():
 
     response = main(url)
     return response
+
+
+if __name__ == '__main__':
+    app.run()
