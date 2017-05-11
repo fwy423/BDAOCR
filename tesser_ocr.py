@@ -22,6 +22,7 @@ def batch_rec(img_path):
         name, _ = img.split(".")
         with open(img_path + name + '_rec.txt', 'w') as file:
             file.write(content)
+    return content
 
 
 # print(tesserocr.tesseract_version())  # print tesseract-ocr version

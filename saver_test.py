@@ -125,5 +125,6 @@ with tf.Session() as sess:
     result = sess.run(y_pred, feed_dict={xs: test_input,
                                          ys: test_input})
 
-    # new_result = 0.2*result+0.8*test_output
-    batch_recover(result)
+    new_result = 0.5 * result + 0.5 * test_output
+    batch_recover(new_result)
+    # batch_recover(result)

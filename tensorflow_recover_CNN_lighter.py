@@ -218,7 +218,7 @@ feature_map_size = [64, 128]
 learning_rate = 1e-4
 
 batch_size = 128
-epoch = 80
+epoch = 200
 
 ####################
 # Building Network #
@@ -276,7 +276,7 @@ with tf.name_scope("prediction"):
 
 with tf.name_scope("loss"):
     # the loss of prediction result
-    loss = tf.reduce_mean(tf.reduce_sum(tf.square(y_pred - ys), reduction_indices=[1]))
+    loss = tf.reduce_mean(tf.square(y_pred - ys))
 
 with tf.name_scope("training"):
     # training optimizer and train_step
